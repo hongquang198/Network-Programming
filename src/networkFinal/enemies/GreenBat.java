@@ -50,7 +50,7 @@ public class GreenBat extends Enemy{
 			return;
 		}else{
 			this.interval = 0;
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, 20, this.getId()));
+			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, 0, 20, this.getId()));
 		}
 	}
 	

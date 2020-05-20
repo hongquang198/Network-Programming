@@ -8,7 +8,7 @@ import com.joshuacrotts.standards.StdOps;
 
 public class Bullet extends StandardGameObject{
 	
-	public Bullet(double x, double y, double velY, StandardID id){
+	public Bullet(double x, double y, double velX, double velY, StandardID id){
 		this.x = x;
 		this.y = y;
 		this.id = (id == StandardID.Player) ? StandardID.Weapon: StandardID.Obstacle;
@@ -18,6 +18,7 @@ public class Bullet extends StandardGameObject{
 		this.width = this.currentSprite.getWidth();
 		this.height = this.currentSprite.getHeight();
 		
+		this.velX = velX;
 		this.velY = velY;
 	}
 	

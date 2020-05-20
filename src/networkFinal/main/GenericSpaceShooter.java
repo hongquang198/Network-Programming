@@ -49,7 +49,7 @@ public class GenericSpaceShooter extends StandardGame{
 	
 	public void tick(){
 		if(GenericSpaceShooter.gssh.size() < 20)
-//			GenericSpaceShooter.gssh.addEntity(new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50)));
+			GenericSpaceShooter.gssh.addEntity(new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50)));
 		
 		StandardHandler.Handler(gssh);
 		
