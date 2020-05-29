@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.InetAddress;
 
 import javax.swing.JOptionPane;
 
@@ -14,14 +15,19 @@ import com.joshuacrotts.standards.StdOps;
 
 public class Player extends StandardGameObject implements KeyListener {
 
-	private GenericSpaceShooter gss;
+	protected GenericSpaceShooter gss;
 
 	private short interval = 100;
+	protected String username;
+	public InetAddress ipAddress;
+	public int port;
 
-	public Player(double x, double y, GenericSpaceShooter gss) {
+	public Player(double x, double y, String username, GenericSpaceShooter gss, InetAddress ipAddress, int port) {
 		super(x, y, StandardID.Player);
 
 		this.gss = gss;
+		this.ipAddress = ipAddress;
+		this.port = port;
 
 		this.currentSprite = StdOps.loadImage("Resources/player.png");
 

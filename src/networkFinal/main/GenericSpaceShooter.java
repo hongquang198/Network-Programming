@@ -2,12 +2,14 @@ package networkFinal.main;
 
 import java.awt.image.BufferedImage;
 
+import javax.swing.JOptionPane;
+
 import com.joshuacrotts.standards.StandardDraw;
-import com.joshuacrotts.standards.StandardGame;
 import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StdOps;
 
 import networkFinal.enemies.GreenBat;
+import networkFinal.net.packets.Packet00Login;
 
 public class GenericSpaceShooter extends StandardGame{
 	
@@ -28,24 +30,26 @@ public class GenericSpaceShooter extends StandardGame{
 	//Etc instance variables
 	public static int score = 0;
 	
+
 	public GenericSpaceShooter(int w, int h){
-		super(w, h, "Generic Space Shooter in Under 30 Minutes!");
+		super(w, h, "Generic Space Shooter!");
 		this.consoleFPS = false;
-		
 		GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
-		
 		
 		GenericSpaceShooter.gssh = new GenericSpaceShooterHandler();
 		
-		this.player = new Player(300, 720, this);
-		
-		
-		GenericSpaceShooter.gssh.addEntity(this.player);
-		
-		this.addListener(player);
-		
-		this.StartGame();
+//		this.player = new Player(300, 720, this);
+//		
+//		GenericSpaceShooter.gssh.addEntity(this.player);
+//		
+//		this.addListener(player);
+
+		this.StartGame(this);
+		Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username")) ;
+		loginPacket.writeData(socketClient);
+
 	}
+	
 	
 	public void tick(){
 		if(GenericSpaceShooter.gssh.size() < 20)
@@ -62,6 +66,7 @@ public class GenericSpaceShooter extends StandardGame{
 		
 	}
 	
+
 	public static void main(String[] args) {
 		new GenericSpaceShooter(800,800);
 	}
