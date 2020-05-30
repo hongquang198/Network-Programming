@@ -157,4 +157,5 @@ public class Player extends StandardGameObject implements KeyListener {
 	public String getUsername() {
 		return this.username;
 	}
+	
 }
