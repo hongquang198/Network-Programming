@@ -2,7 +2,6 @@ package networkFinal.main;
 
 import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.joshuacrotts.standards.StandardDraw;
@@ -10,7 +9,6 @@ import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.enemies.GreenBat;
 import networkFinal.net.packets.Packet00Login;
 
 public class GenericSpaceShooter extends StandardGame {
@@ -23,6 +21,7 @@ public class GenericSpaceShooter extends StandardGame {
 	// Inits the new handler to handle collisions
 	public static StandardHandler gssh;
 
+	public static GenericSpaceShooter gss;
 	public WindowHandler windowHandler;
 	// Inits the objects in the game
 	Player player;
@@ -36,6 +35,7 @@ public class GenericSpaceShooter extends StandardGame {
 	public GenericSpaceShooter(int w, int h) {
 		super(w, h, "Generic Space Shooter!");
 		this.consoleFPS = false;
+		gss = this;
 		GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
 
 		GenericSpaceShooter.gssh = new GenericSpaceShooterHandler();
@@ -62,7 +62,6 @@ public class GenericSpaceShooter extends StandardGame {
 //			GenericSpaceShooter.gssh.addEntity(new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50)));
 
 		StandardHandler.Handler(gssh);
-		System.out.println(GenericSpaceShooter.gssh.entities.size());
 
 		GenericSpaceShooter.score++;
 	}
@@ -73,14 +72,6 @@ public class GenericSpaceShooter extends StandardGame {
 
 	}
 
-	public void removePlayer(String username) {
-		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
-			if (e instanceof Player && ((Player) e).getUsername().equals(username)) {
-				GenericSpaceShooter.gssh.removeEntity(e);
-			}
-
-		}
-	}
 
 	public static void main(String[] args) {
 		new GenericSpaceShooter(800, 800);

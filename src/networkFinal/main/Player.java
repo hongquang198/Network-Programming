@@ -13,6 +13,8 @@ import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardID;
 import com.joshuacrotts.standards.StdOps;
 
+import networkFinal.net.packets.Packet02Move;
+
 public class Player extends StandardGameObject implements KeyListener {
 
 	protected GenericSpaceShooter gss;
@@ -63,6 +65,10 @@ public class Player extends StandardGameObject implements KeyListener {
 		this.x += this.velX;
 		this.y -= this.velY;
 
+		if (velX != 0 || velY != 0) {
+			Packet02Move packet = new Packet02Move(this.getUsername(), this.x, this.y);
+			packet.writeData(GenericSpaceShooter.gss.socketClient);
+		}
 		this.checkCoordinates();
 
 		this.fireBulletCheck();

@@ -8,8 +8,11 @@ import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StandardID;
 
 public class GenericSpaceShooterHandler extends StandardHandler{
-
+	
+	public static GenericSpaceShooterHandler gssh;
+	
 	public GenericSpaceShooterHandler(){
+		gssh = this;
 		this.entities = new ArrayList<StandardGameObject>();
 	}
 	
@@ -62,5 +65,33 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 		for(int i = 0; i < this.entities.size(); i++){
 			this.entities.get(i).render(g2);
 		}
+	}
+	
+	public void removePlayer(String username) {
+		int index = 0;
+		for (StandardGameObject e : gssh.entities) {
+			if (e instanceof Player && ((Player) e).getUsername().equals(username)) {
+				break;
+			}
+			index++;
+		}
+		gssh.entities.remove(index);
+	}
+	
+	private int getPlayerIndex (String username) {
+		int index = 0;
+		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
+			if (e instanceof Player && ((Player)e).getUsername().equals(username)) {
+				break;
+			}
+			index++;
+		}
+		return index;
+	}
+	
+	public void movePlayer(String username, double x, double y) {
+		int index = getPlayerIndex(username);
+		GenericSpaceShooterHandler.gssh.entities.get(index).x = x;
+		GenericSpaceShooterHandler.gssh.entities.get(index).y = y;
 	}
 }
