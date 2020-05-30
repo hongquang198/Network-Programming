@@ -38,14 +38,17 @@ public class GenericSpaceShooter extends StandardGame{
 		
 		GenericSpaceShooter.gssh = new GenericSpaceShooterHandler();
 		
-//		this.player = new Player(300, 720, this);
-//		
+//		this.player = new Player(300, 720, JOptionPane.showInputDialog("Please enter a username"), this);
+	
+		Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog("Please enter a username")) ;
 //		GenericSpaceShooter.gssh.addEntity(this.player);
-//		
-//		this.addListener(player);
+		
+		if (socketServer != null) {
+			socketServer.addConnection(player, loginPacket);
+		}
+		this.addListener(player);
 
 		this.StartGame(this);
-		Packet00Login loginPacket = new Packet00Login(JOptionPane.showInputDialog(this, "Please enter a username")) ;
 		loginPacket.writeData(socketClient);
 
 	}

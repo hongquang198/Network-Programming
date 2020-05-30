@@ -18,7 +18,7 @@ public class Player extends StandardGameObject implements KeyListener {
 	protected GenericSpaceShooter gss;
 
 	private short interval = 100;
-	protected String username;
+	public String username;
 	public InetAddress ipAddress;
 	public int port;
 
@@ -28,7 +28,7 @@ public class Player extends StandardGameObject implements KeyListener {
 		this.gss = gss;
 		this.ipAddress = ipAddress;
 		this.port = port;
-
+		this.username = username;
 		this.currentSprite = StdOps.loadImage("Resources/player.png");
 
 		this.width = this.currentSprite.getWidth();
@@ -36,6 +36,20 @@ public class Player extends StandardGameObject implements KeyListener {
 
 		this.health = 50;
 
+	}
+	
+	public Player(double x, double y, String username, GenericSpaceShooter gss) {
+		super(x, y, StandardID.Player);
+
+		this.gss = gss;
+
+		this.currentSprite = StdOps.loadImage("Resources/player.png");
+
+		this.width = this.currentSprite.getWidth();
+		this.height = this.currentSprite.getHeight();
+
+		this.health = 50;
+		this.username = username;
 	}
 
 	public void tick() {
@@ -138,5 +152,9 @@ public class Player extends StandardGameObject implements KeyListener {
 		if (this.interval > 20) {
 			this.interval = 20;
 		}
+	}
+	
+	public String getUsername() {
+		return this.username;
 	}
 }

@@ -36,8 +36,8 @@ public class GreenBat extends Enemy{
 		this.x += this.velX;
 		this.y += this.velY;
 		
-		this.fireBulletCheck();
-		this.fireBullet();
+//		this.fireBulletCheck();
+//		this.fireBullet();
 		
 	}
 	
