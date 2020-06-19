@@ -142,10 +142,12 @@ public class Player extends StandardGameObject implements KeyListener {
 			return;
 		} else {
 			this.interval = 0;
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x) - this.width/2, this.y, -7, -20, this.getId()));	
 			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x), this.y, -5, -20, this.getId()));	
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, -2, -20, this.getId()));
+
 			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width), this.y, 0, -20, this.getId()));
+
+			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, -2, -20, this.getId()));
+			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x) - this.width/2, this.y, -7, -20, this.getId()));	
 			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width*3/2), this.y, 5, -20, this.getId()));
 			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width*2), this.y, 7, -20, this.getId()));
 			
