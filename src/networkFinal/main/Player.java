@@ -14,11 +14,12 @@ import com.joshuacrotts.standards.StandardID;
 import com.joshuacrotts.standards.StdOps;
 
 import networkFinal.net.packets.Packet02Move;
+import networkFinal.net.packets.Packet03Fire;
 
 public class Player extends StandardGameObject implements KeyListener {
 
 	protected GenericSpaceShooter gss;
-
+	public static int bulletId = 0;
 	private short interval = 100;
 	public String username;
 	public InetAddress ipAddress;
@@ -142,15 +143,11 @@ public class Player extends StandardGameObject implements KeyListener {
 			return;
 		} else {
 			this.interval = 0;
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x), this.y, -5, -20, this.getId()));	
+			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, -20, this.getId(), this.getUsername()));
+			bulletId++;
+			Packet03Fire packet = new Packet03Fire(this.username, this.y);
+			packet.writeData(GenericSpaceShooter.gss.socketClient);
 
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width), this.y, 0, -20, this.getId()));
-
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, -2, -20, this.getId()));
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x) - this.width/2, this.y, -7, -20, this.getId()));	
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width*3/2), this.y, 5, -20, this.getId()));
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width*2), this.y, 7, -20, this.getId()));
-			
 		}
 	}
 

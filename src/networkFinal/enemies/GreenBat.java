@@ -46,12 +46,12 @@ public class GreenBat extends Enemy{
 	}
 	
 	public void fireBullet(){
-		if(this.interval < 150){
-			return;
-		}else{
-			this.interval = 0;
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, 0, 20, this.getId()));
-		}
+//		if(this.interval < 150){
+//			return;
+//		}else{
+//			this.interval = 0;
+//			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, 0, 20, this.getId(), "GreenBat"));
+//		}
 	}
 	
 	private void fireBulletCheck(){

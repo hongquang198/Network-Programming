@@ -10,22 +10,16 @@ import networkFinal.net.GameServer;
 public class Packet03Fire extends Packet {
 
 	private String username;
-	private double x, y;
 
 	public Packet03Fire(byte[] data) {
 		super(03);
 		String[] dataArray = readData(data).split(",");
 		this.username = dataArray[0];
-
-		this.x = Double.parseDouble(dataArray[1]);
-		this.y = Double.parseDouble(dataArray[2]);
 	}
 
-	public Packet03Fire(String username, double x, double y) {
+	public Packet03Fire(String username, double y) {
 		super(03);
 		this.username = username;
-		this.x = x;
-		this.y = y;
 	}
 
 	@Override
@@ -41,19 +35,12 @@ public class Packet03Fire extends Packet {
 
 	@Override
 	public byte[] getData() {
-		return ("03" + this.username + "," + this.x + "," + this.y).getBytes();
+		return ("03" + this.username + "," ).getBytes();
 	}
 
 	public String getUsername() {
-		return username;
+		return this.username;
 	}
 	
-	public double getX() {
-		return this.x;
-	}
-	
-	public double getY() {
-		return this.y;
-	}
 
 }

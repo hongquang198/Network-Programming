@@ -15,6 +15,7 @@ import networkFinal.net.packets.Packet.PacketTypes;
 import networkFinal.net.packets.Packet00Login;
 import networkFinal.net.packets.Packet01Disconnect;
 import networkFinal.net.packets.Packet02Move;
+import networkFinal.net.packets.Packet03Fire;
 
 public class GameClient extends Thread {
 	private InetAddress ipAddress;
@@ -74,6 +75,10 @@ public class GameClient extends Thread {
 		case MOVE:
 			packet = new Packet02Move(data);
 			handleMove(((Packet02Move)packet));
+			break;
+		case FIRE:
+			packet = new Packet03Fire(data);
+			handleFire(((Packet03Fire)packet));
 		}
 		
 	}
@@ -89,5 +94,9 @@ public class GameClient extends Thread {
 
 	private void handleMove(Packet02Move packet) {
 		GenericSpaceShooterHandler.gssh.movePlayer(packet.getUsername(), packet.getX(), packet.getY());
+	}
+	
+	private void handleFire(Packet03Fire packet) {
+		GenericSpaceShooterHandler.gssh.fireBullet(packet.getUsername());
 	}
 }

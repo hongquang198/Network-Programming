@@ -78,6 +78,16 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 		gssh.entities.remove(index);
 	}
 	
+	private Player getPlayer(String username) {
+		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
+			if (e instanceof Player && ((Player)e).getUsername().equals(username)) {
+				return (Player)e;
+			}
+		}
+		return null;
+	}
+
+	
 	private int getPlayerIndex (String username) {
 		int index = 0;
 		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
@@ -89,9 +99,20 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 		return index;
 	}
 	
+
+	
 	public void movePlayer(String username, double x, double y) {
 		int index = getPlayerIndex(username);
 		GenericSpaceShooterHandler.gssh.entities.get(index).x = x;
 		GenericSpaceShooterHandler.gssh.entities.get(index).y = y;
+	}
+	
+	public void fireBullet(String username) {
+		Player player = getPlayer(username);
+		int playerIndex = getPlayerIndex(username);
+		double playerPositionX = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).x;
+		double playerPositionY = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).y;
+		double playerWidth = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).width;
+		GenericSpaceShooterHandler.gssh.entities.add(new Bullet((playerPositionX + playerWidth / 2), playerPositionY, -20, player.getId(), player.getUsername()));
 	}
 }

@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import networkFinal.main.Bullet;
 import networkFinal.main.GenericSpaceShooter;
 import networkFinal.main.Player;
 import networkFinal.net.packets.Packet;
@@ -15,6 +16,7 @@ import networkFinal.net.packets.Packet.PacketTypes;
 import networkFinal.net.packets.Packet00Login;
 import networkFinal.net.packets.Packet01Disconnect;
 import networkFinal.net.packets.Packet02Move;
+import networkFinal.net.packets.Packet03Fire;
 
 public class GameServer extends Thread {
 
@@ -79,7 +81,13 @@ public class GameServer extends Thread {
 			packet = new Packet02Move(data);
 			System.out.println(((Packet02Move) packet).getUsername() + "has moved to " + ((Packet02Move) packet).getX()
 					+ ", " + ((Packet02Move) packet).getY());
-			this.handleMove(((Packet02Move)packet));
+			this.handleMove(((Packet02Move) packet));
+			break;
+		case FIRE:
+			packet = new Packet03Fire(data);
+			System.out
+					.println(((Packet03Fire) packet).getUsername() + "has fired." );
+			this.handleFire(((Packet03Fire) packet));
 			break;
 		}
 	}
@@ -149,10 +157,21 @@ public class GameServer extends Thread {
 	}
 
 	private void handleMove(Packet02Move packet) {
-		if (getPlayer(packet.getUsername())!=null) {
+		if (getPlayer(packet.getUsername()) != null) {
 			int index = getPlayerIndex(packet.getUsername());
 			this.connectedPlayers.get(index).x = packet.getX();
 			this.connectedPlayers.get(index).y = packet.getY();
+			packet.writeData(this);
+		}
+	}
+	
+
+	
+	private void handleFire(Packet03Fire packet) {
+		if (getPlayer(packet.getUsername()) != null) {
+			int index = getPlayerIndex(packet.getUsername());
+			double playerPositionX = this.connectedPlayers.get(index).x;
+			double playerPositionY = this.connectedPlayers.get(index).y;
 			packet.writeData(this);
 		}
 	}
