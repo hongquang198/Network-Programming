@@ -7,6 +7,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.joshuacrotts.standards.StdOps;
+
+import networkFinal.enemies.GreenBat;
 import networkFinal.main.GenericSpaceShooter;
 import networkFinal.main.GenericSpaceShooterHandler;
 import networkFinal.main.Player;
@@ -16,6 +19,7 @@ import networkFinal.net.packets.Packet00Login;
 import networkFinal.net.packets.Packet01Disconnect;
 import networkFinal.net.packets.Packet02Move;
 import networkFinal.net.packets.Packet03Fire;
+import networkFinal.net.packets.Packet04EnemyMove;
 
 public class GameClient extends Thread {
 	private InetAddress ipAddress;
@@ -79,6 +83,10 @@ public class GameClient extends Thread {
 		case FIRE:
 			packet = new Packet03Fire(data);
 			handleFire(((Packet03Fire)packet));
+			break;
+		case ENEMYMOVE:
+			packet = new Packet04EnemyMove(data);
+			handleEnemyMove(((Packet04EnemyMove)packet));
 		}
 		
 	}
@@ -98,5 +106,9 @@ public class GameClient extends Thread {
 	
 	private void handleFire(Packet03Fire packet) {
 		GenericSpaceShooterHandler.gssh.fireBullet(packet.getUsername());
+	}
+	
+	private void handleEnemyMove(Packet04EnemyMove packet) {
+		GenericSpaceShooter.gssh.addEntity(new GreenBat(packet.getX(), packet.getY()));
 	}
 }

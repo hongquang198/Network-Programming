@@ -8,6 +8,10 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.joshuacrotts.standards.StandardHandler;
+import com.joshuacrotts.standards.StdOps;
+
+import networkFinal.enemies.GreenBat;
 import networkFinal.main.Bullet;
 import networkFinal.main.GenericSpaceShooter;
 import networkFinal.main.Player;
@@ -17,12 +21,15 @@ import networkFinal.net.packets.Packet00Login;
 import networkFinal.net.packets.Packet01Disconnect;
 import networkFinal.net.packets.Packet02Move;
 import networkFinal.net.packets.Packet03Fire;
+import networkFinal.net.packets.Packet04EnemyMove;
 
 public class GameServer extends Thread {
 
 	private DatagramSocket socket;
 	private GenericSpaceShooter game;
 	private List<Player> connectedPlayers = new ArrayList<Player>();
+	private List<GreenBat> enemies = new ArrayList<GreenBat>();
+	Player player;
 
 	public GameServer(GenericSpaceShooter game) {
 		this.game = game;
@@ -37,7 +44,8 @@ public class GameServer extends Thread {
 		while (true) {
 			byte[] data = new byte[1024];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
-
+			this.generateEnemies();
+			this.sendEnemies(player);
 			try {
 				socket.receive(packet);
 			} catch (IOException e) {
@@ -67,7 +75,7 @@ public class GameServer extends Thread {
 			packet = new Packet00Login(data);
 			System.out.println("[" + address.getHostAddress() + ":" + port + "] "
 					+ ((Packet00Login) packet).getUsername() + " has connected ..");
-			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
+			player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
 			this.addConnection(player, (Packet00Login) packet);
 			break;
 		case DISCONNECT:
@@ -85,9 +93,9 @@ public class GameServer extends Thread {
 			break;
 		case FIRE:
 			packet = new Packet03Fire(data);
-			System.out
-					.println(((Packet03Fire) packet).getUsername() + "has fired." );
+			System.out.println(((Packet03Fire) packet).getUsername() + "has fired.");
 			this.handleFire(((Packet03Fire) packet));
+
 			break;
 		}
 	}
@@ -113,6 +121,27 @@ public class GameServer extends Thread {
 		if (!alreadyConnected) {
 			this.connectedPlayers.add(player);
 //			game.addListener(player);
+		}
+	}
+
+	public void generateEnemies() {
+			if (GenericSpaceShooter.gssh.size() < 20) {
+				GreenBat greenBat = new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50));
+				enemies.add(greenBat);
+		}
+	}
+
+	public void sendEnemies(Player player) {
+		boolean alreadyConnected = false;
+		for (Player p : this.connectedPlayers) {
+			if (player.getUsername().equalsIgnoreCase(p.getUsername())) {
+				alreadyConnected = true;
+			} else {
+				for (GreenBat enemy : enemies) {
+					Packet04EnemyMove packet = new Packet04EnemyMove(enemy.getX(), enemy.getY());
+					sendDataToAllClients(packet.getData());
+				}
+			}
 		}
 	}
 
@@ -164,9 +193,7 @@ public class GameServer extends Thread {
 			packet.writeData(this);
 		}
 	}
-	
 
-	
 	private void handleFire(Packet03Fire packet) {
 		if (getPlayer(packet.getUsername()) != null) {
 			int index = getPlayerIndex(packet.getUsername());

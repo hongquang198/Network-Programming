@@ -21,7 +21,7 @@ public class GreenBat extends Enemy{
 		
 		this.health = 40;
 		
-		this.velY = StdOps.rand(0, 5);
+		this.velY = 1;
 		
 		
 	}
