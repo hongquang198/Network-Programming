@@ -7,24 +7,20 @@ import networkFinal.main.Player;
 import networkFinal.net.GameClient;
 import networkFinal.net.GameServer;
 
-public class Packet03Fire extends Packet {
+public class Packet04EnemyMove extends Packet {
 
-	private String username;
-	private double x;
-	private double y;
+	private double x, y;
 
-	public Packet03Fire(byte[] data) {
-		super(03);
+	public Packet04EnemyMove(byte[] data) {
+		super(04);
 		String[] dataArray = readData(data).split(",");
-		this.username = dataArray[0];
-		this.x = Double.parseDouble(dataArray[1]);
-		this.x = Double.parseDouble(dataArray[2]);
 
+		this.x = Double.parseDouble(dataArray[1]);
+		this.y = Double.parseDouble(dataArray[2]);
 	}
 
-	public Packet03Fire(String username, double x, double y) {
-		super(03);
-		this.username = username;
+	public Packet04EnemyMove(double x, double y) {
+		super(04);
 		this.x = x;
 		this.y = y;
 	}
@@ -42,16 +38,14 @@ public class Packet03Fire extends Packet {
 
 	@Override
 	public byte[] getData() {
-		return ("03" + this.username + "," + this.x + "," + this.y).getBytes();
+		return ("04" + "," + this.x + "," + this.y).getBytes();
 	}
 
-	public String getUsername() {
-		return this.username;
-	}
 	
 	public double getX() {
 		return this.x;
 	}
+	
 	public double getY() {
 		return this.y;
 	}

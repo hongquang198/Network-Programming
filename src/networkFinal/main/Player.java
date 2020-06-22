@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 
 import javax.swing.JOptionPane;
@@ -13,6 +14,7 @@ import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardID;
 import com.joshuacrotts.standards.StdOps;
 
+import networkFinal.net.packets.Packet01Disconnect;
 import networkFinal.net.packets.Packet02Move;
 import networkFinal.net.packets.Packet03Fire;
 
@@ -58,9 +60,11 @@ public class Player extends StandardGameObject implements KeyListener {
 	public void tick() {
 
 		if (this.health <= 0) {
-			GenericSpaceShooter.gssh.removeEntity(this);
-			JOptionPane.showMessageDialog(null, "You died, your score was: " + GenericSpaceShooter.score);
-			System.exit(0);
+//			GenericSpaceShooter.gssh.removeEntity(this);
+
+//			JOptionPane.showMessageDialog(null, "You died, your score was: " + GenericSpaceShooter.score);
+			
+//			System.exit(0);
 		}
 
 		this.x += this.velX;
@@ -79,9 +83,11 @@ public class Player extends StandardGameObject implements KeyListener {
 	public void render(Graphics2D g2) {
 
 		g2.drawImage(this.currentSprite, (int) x, (int) y, null);
-
-		StandardDraw.text("Life: " + this.health, 20, 50, "", 40f, Color.YELLOW);
+		
+		StandardDraw.text("Life: ", 20, 50, "", 40f, Color.YELLOW);
 		StandardDraw.text("Score: " + GenericSpaceShooter.score, 20, 90, "", 40f, Color.YELLOW);
+		StandardDraw.text("Level: " + (GenericSpaceShooter.score/1000 + 1), 20, 140, "", 40f, Color.YELLOW);
+
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -143,9 +149,10 @@ public class Player extends StandardGameObject implements KeyListener {
 			return;
 		} else {
 			this.interval = 0;
-			GenericSpaceShooter.gssh.addEntity(new Bullet((this.x + this.width / 2), this.y, -20, this.getId(), this.getUsername()));
+			Bullet bullet = new Bullet((this.x + this.width / 2), this.y, -20, this.getId(), this.getUsername());
+			GenericSpaceShooter.gssh.addEntity(bullet);
 			bulletId++;
-			Packet03Fire packet = new Packet03Fire(this.username, this.y);
+			Packet03Fire packet = new Packet03Fire(this.username, bullet.getX(), bullet.getY());
 			packet.writeData(GenericSpaceShooter.gss.socketClient);
 
 		}

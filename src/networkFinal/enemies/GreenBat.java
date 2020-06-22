@@ -4,13 +4,10 @@ import java.awt.Graphics2D;
 
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.main.Bullet;
 import networkFinal.main.GenericSpaceShooter;
 
 public class GreenBat extends Enemy{
 
-	
-	
 	public GreenBat(double x, double y){
 		super(x, y);
 		
@@ -21,7 +18,7 @@ public class GreenBat extends Enemy{
 		
 		this.health = 40;
 		
-		this.velY = 1;
+		this.velY = GenericSpaceShooter.score/1000 + 1;
 		
 		
 	}
@@ -33,6 +30,10 @@ public class GreenBat extends Enemy{
 			return;
 		}
 		
+		if( GenericSpaceShooter.score%1000 == 0) {
+			this.velY*= 2;
+//			this.velY *= speed;
+		}
 		this.x += this.velX;
 		this.y += this.velY;
 		

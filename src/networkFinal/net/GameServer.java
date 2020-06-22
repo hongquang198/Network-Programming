@@ -29,7 +29,7 @@ public class GameServer extends Thread {
 	private GenericSpaceShooter game;
 	private List<Player> connectedPlayers = new ArrayList<Player>();
 	private List<GreenBat> enemies = new ArrayList<GreenBat>();
-	Player player;
+	boolean isAbleToFire = false;
 
 	public GameServer(GenericSpaceShooter game) {
 		this.game = game;
@@ -44,8 +44,13 @@ public class GameServer extends Thread {
 		while (true) {
 			byte[] data = new byte[1024];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
+
+			// Khoi tao dich
 			this.generateEnemies();
-			this.sendEnemies(player);
+			
+			if (isAbleToFire == true) {
+				this.sendEnemies();
+			}
 			try {
 				socket.receive(packet);
 			} catch (IOException e) {
@@ -75,15 +80,21 @@ public class GameServer extends Thread {
 			packet = new Packet00Login(data);
 			System.out.println("[" + address.getHostAddress() + ":" + port + "] "
 					+ ((Packet00Login) packet).getUsername() + " has connected ..");
-			player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
+			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
 			this.addConnection(player, (Packet00Login) packet);
+			if (connectedPlayers.size() < 2) {
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgWait.png");
+			} else {
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgStart.png");
+			}
 			break;
 		case DISCONNECT:
 			packet = new Packet01Disconnect(data);
 			System.out.println("[" + address.getHostAddress() + ":" + port + "] "
 					+ ((Packet01Disconnect) packet).getUsername() + " has left the world..");
-
+			
 			this.removeConnection((Packet01Disconnect) packet);
+
 			break;
 		case MOVE:
 			packet = new Packet02Move(data);
@@ -95,7 +106,12 @@ public class GameServer extends Thread {
 			packet = new Packet03Fire(data);
 			System.out.println(((Packet03Fire) packet).getUsername() + "has fired.");
 			this.handleFire(((Packet03Fire) packet));
-
+			if (connectedPlayers.size() >= 2) {
+				GenericSpaceShooter.isPlayer2Connected = true;
+				GenericSpaceShooter.isPlayer1Connected = true;
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
+				isAbleToFire = true;
+			}
 			break;
 		}
 	}
@@ -125,23 +141,16 @@ public class GameServer extends Thread {
 	}
 
 	public void generateEnemies() {
-			if (GenericSpaceShooter.gssh.size() < 20) {
-				GreenBat greenBat = new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50));
-				enemies.add(greenBat);
+		if (enemies.size() < 20) {
+			GreenBat greenBat = new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50));
+			enemies.add(greenBat);
 		}
 	}
 
-	public void sendEnemies(Player player) {
-		boolean alreadyConnected = false;
-		for (Player p : this.connectedPlayers) {
-			if (player.getUsername().equalsIgnoreCase(p.getUsername())) {
-				alreadyConnected = true;
-			} else {
-				for (GreenBat enemy : enemies) {
-					Packet04EnemyMove packet = new Packet04EnemyMove(enemy.getX(), enemy.getY());
-					sendDataToAllClients(packet.getData());
-				}
-			}
+	public void sendEnemies() {
+		for (GreenBat enemy : enemies) {
+			Packet04EnemyMove packet = new Packet04EnemyMove(enemy.getX(), enemy.getY());
+			sendDataToAllClients(packet.getData());
 		}
 	}
 
@@ -190,6 +199,12 @@ public class GameServer extends Thread {
 			int index = getPlayerIndex(packet.getUsername());
 			this.connectedPlayers.get(index).x = packet.getX();
 			this.connectedPlayers.get(index).y = packet.getY();
+			for (GreenBat enemy : enemies) {
+				if (enemy.getBounds().intersects(this.connectedPlayers.get(index).getBounds())) {
+					this.connectedPlayers.remove(index);
+				}
+			}
+
 			packet.writeData(this);
 		}
 	}

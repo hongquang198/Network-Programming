@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.joshuacrotts.standards.StandardHandler;
+import com.joshuacrotts.standards.StandardID;
 import com.joshuacrotts.standards.StdOps;
 
 import networkFinal.enemies.GreenBat;
@@ -53,7 +55,7 @@ public class GameClient extends Thread {
 //			System.out.println("SERVER >" + message);	
 		}
 	}
-	
+
 	private void parsePacket(byte[] data, InetAddress address, int port) {
 		String message = new String(data).trim();
 		PacketTypes type = Packet.lookupPacket(message.substring(0, 2));
@@ -68,6 +70,12 @@ public class GameClient extends Thread {
 					+ ((Packet00Login) packet).getUsername() + " has joined the game ..");
 			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), gss, address, port);
 			GenericSpaceShooter.gssh.addEntity(player);
+			if (GenericSpaceShooter.gssh.entities.size() < 2) {
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgWait.png");
+			} else {
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgStart.png");
+			}
+
 //			game.addListener(player);
 			break;
 		case DISCONNECT:
@@ -78,17 +86,29 @@ public class GameClient extends Thread {
 			break;
 		case MOVE:
 			packet = new Packet02Move(data);
-			handleMove(((Packet02Move)packet));
+			handleMove(((Packet02Move) packet));
 			break;
 		case FIRE:
 			packet = new Packet03Fire(data);
-			handleFire(((Packet03Fire)packet));
+			handleFire(((Packet03Fire) packet));
+			int count = 0;
+			for (int i = 0; i < GenericSpaceShooter.gssh.entities.size(); i++)
+
+				if (GenericSpaceShooter.gssh.entities.get(i).getId() == StandardID.Player) {
+					count++;
+				}
+			if (count >= 2) {
+				GenericSpaceShooter.isPlayer2Connected = true;
+				GenericSpaceShooter.isPlayer1Connected = true;
+
+				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
+			}
 			break;
 		case ENEMYMOVE:
 			packet = new Packet04EnemyMove(data);
-			handleEnemyMove(((Packet04EnemyMove)packet));
+			handleEnemyMove(((Packet04EnemyMove) packet));
 		}
-		
+
 	}
 
 	public void sendData(byte[] data) {
@@ -103,12 +123,14 @@ public class GameClient extends Thread {
 	private void handleMove(Packet02Move packet) {
 		GenericSpaceShooterHandler.gssh.movePlayer(packet.getUsername(), packet.getX(), packet.getY());
 	}
-	
+
 	private void handleFire(Packet03Fire packet) {
 		GenericSpaceShooterHandler.gssh.fireBullet(packet.getUsername());
 	}
-	
+
 	private void handleEnemyMove(Packet04EnemyMove packet) {
-		GenericSpaceShooter.gssh.addEntity(new GreenBat(packet.getX(), packet.getY()));
+		if (GenericSpaceShooter.gssh.size() < 20)
+			GenericSpaceShooter.gssh.addEntity(new GreenBat(packet.getX(), packet.getY()));
+
 	}
 }

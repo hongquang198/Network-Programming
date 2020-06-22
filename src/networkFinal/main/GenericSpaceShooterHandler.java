@@ -1,7 +1,10 @@
 package networkFinal.main;
 
 import java.awt.Graphics2D;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardHandler;
@@ -29,7 +32,7 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 					if(this.entities.get(j).getId() == StandardID.Obstacle &&
 							this.entities.get(j).getBounds().intersects(this.entities.get(i).getBounds())){
 						
-							this.entities.get(i).health -= 20;
+							this.entities.get(i).health -= 50;
 							this.entities.remove(j);
 							j--;
 						
@@ -48,7 +51,7 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 							this.entities.get(j).getBounds().intersects(this.entities.get(i).getBounds())){
 						
 						this.entities.get(j).health -= 20;
-						
+//						GenericSpaceShooter.score += 1000;??
 						
 					}
 					
@@ -56,6 +59,32 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 				
 			}
 			
+			// Player to enemy collision
+			if(this.entities.get(i).getId() == StandardID.Player){
+				Player player = (Player) this.entities.get(i);
+				
+				for(int j = 0; j < this.entities.size(); j++){
+					
+					
+					if(this.entities.get(j).getId() == StandardID.Enemy &&
+							this.entities.get(j).getBounds().intersects(this.entities.get(i).getBounds())){
+						
+							this.entities.get(i).health -= 0;
+							this.entities.remove(j);
+							j--;
+							if (player.getUsername().equalsIgnoreCase(GenericSpaceShooter.player.getUsername())) {
+								JOptionPane.showMessageDialog(null, "You died, your score was: " + GenericSpaceShooter.score);
+								GenericSpaceShooter.gss.window.getFrame().dispatchEvent(new WindowEvent(GenericSpaceShooter.gss.window.getFrame(), WindowEvent.WINDOW_CLOSING));
+								
+							}
+
+						
+					}
+					
+				}
+				
+			}
+
 			this.entities.get(i).tick();
 		}
 	}
