@@ -10,11 +10,11 @@ import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.enemies.GreenBat;
+import networkFinal.enemies.Hovercraft;
 import networkFinal.net.packets.Packet00Login;
 import networkFinal.net.packets.Packet01Disconnect;
 
-public class GenericSpaceShooter extends StandardGame {
+public class ShootPlaneGame extends StandardGame {
 	public static boolean isPlayer1Connected;
 	public static boolean isPlayer2Connected;
 	// Image reference:
@@ -23,9 +23,9 @@ public class GenericSpaceShooter extends StandardGame {
 	private static final long serialVersionUID = -7923114031576573406L;
 
 	// Inits the new handler to handle collisions
-	public static StandardHandler gssh;
+	public static StandardHandler gameHandler;
 
-	public static GenericSpaceShooter gss;
+	public static ShootPlaneGame game;
 	public WindowHandler windowHandler;
 	// Inits the objects in the game
 	static Player player;
@@ -36,21 +36,21 @@ public class GenericSpaceShooter extends StandardGame {
 	// Etc instance variables
 	public static int score = 0;
 
-	public GenericSpaceShooter(int w, int h) {
+	public ShootPlaneGame(int w, int h) {
 		super(w, h, "KAMIKAZE");
 		isPlayer1Connected = false;
 		isPlayer2Connected = false;
 		this.consoleFPS = false;
-		gss = this;
-		GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
+		game = this;
+		ShootPlaneGame.bg = StdOps.loadImage("Resources/bg.png");
 
-		GenericSpaceShooter.gssh = new GenericSpaceShooterHandler();
+		ShootPlaneGame.gameHandler = new GameHandler();
 
 		windowHandler = new WindowHandler(this);
 		this.player = new Player(300, 720, JOptionPane.showInputDialog("Please enter a username"), this, null, -1);
 
 		Packet00Login loginPacket = new Packet00Login(player.getUsername());
-		GenericSpaceShooter.gssh.addEntity(this.player);
+		ShootPlaneGame.gameHandler.addEntity(this.player);
 
 		this.StartGame(this);
 
@@ -66,9 +66,9 @@ public class GenericSpaceShooter extends StandardGame {
 	public void tick() {
 //		if(GenericSpaceShooter.gssh.size() < 20)
 //			GenericSpaceShooter.gssh.addEntity(new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50)));
-		StandardHandler.Handler(gssh);
+		StandardHandler.Handler(gameHandler);
 		if (isPlayer1Connected == true && isPlayer2Connected == true) {
-			GenericSpaceShooter.score++;			
+			ShootPlaneGame.score++;			
 		}
 		if (player.getHealth() <=0 ) {
 //			this.StopGame();
@@ -79,13 +79,13 @@ public class GenericSpaceShooter extends StandardGame {
 	}
 
 	public void render() {
-		StandardDraw.image(GenericSpaceShooter.bg, 0, 0);
-		StandardDraw.Handler(gssh);
+		StandardDraw.image(ShootPlaneGame.bg, 0, 0);
+		StandardDraw.Handler(gameHandler);
 
 	}
 
 
 	public static void main(String[] args) {
-		new GenericSpaceShooter(800, 800);
+		new ShootPlaneGame(800, 800);
 	}
 }

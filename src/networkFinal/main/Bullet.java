@@ -28,7 +28,7 @@ public class Bullet extends StandardGameObject {
 	public void tick() {
 
 		if (this.y <= -300 || this.y >= 1500) {
-			GenericSpaceShooter.gssh.removeEntity(this);
+			ShootPlaneGame.gameHandler.removeEntity(this);
 			return;
 		}
 

@@ -4,21 +4,21 @@ import java.awt.Graphics2D;
 
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.main.GenericSpaceShooter;
+import networkFinal.main.ShootPlaneGame;
 
-public class GreenBat extends Enemy{
+public class Hovercraft extends Enemy{
 
-	public GreenBat(double x, double y){
+	public Hovercraft(double x, double y){
 		super(x, y);
 		
-		this.currentSprite = StdOps.loadImage("Resources/greenbat.png");
+		this.currentSprite = StdOps.loadImage("Resources/hovercraft.png");
 		
 		this.width = this.currentSprite.getWidth();
 		this.height = this.currentSprite.getHeight();
 		
 		this.health = 40;
 		
-		this.velY = GenericSpaceShooter.score/1000 + 1;
+		this.velY = ShootPlaneGame.score/1000 + 1;
 		
 		
 	}
@@ -26,11 +26,11 @@ public class GreenBat extends Enemy{
 	public void tick(){
 		
 		if(this.health <= 0 || this.y >= 900){
-			GenericSpaceShooter.gssh.removeEntity(this);
+			ShootPlaneGame.gameHandler.removeEntity(this);
 			return;
 		}
 		
-		if( GenericSpaceShooter.score%1000 == 0) {
+		if( ShootPlaneGame.score%1000 == 0) {
 			this.velY*= 2;
 //			this.velY *= speed;
 		}

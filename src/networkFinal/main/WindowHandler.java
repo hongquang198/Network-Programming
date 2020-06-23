@@ -7,9 +7,9 @@ import networkFinal.net.packets.Packet01Disconnect;
 
 public class WindowHandler implements WindowListener {
 	
-	private final GenericSpaceShooter gss;
+	private final ShootPlaneGame gss;
 	
-	public WindowHandler(GenericSpaceShooter gss) {
+	public WindowHandler(ShootPlaneGame gss) {
 		this.gss = gss;
 		this.gss.window.getFrame().addWindowListener(this);
 	}

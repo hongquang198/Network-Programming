@@ -24,14 +24,14 @@ import networkFinal.net.packets.Packet03Fire;
 
 public class Player extends StandardGameObject implements KeyListener {
 
-	protected GenericSpaceShooter gss;
+	protected ShootPlaneGame gss;
 	public static int bulletId = 0;
 	private short interval = 100;
 	public String username;
 	public InetAddress ipAddress;
 	public int port;
 
-	public Player(double x, double y, String username, GenericSpaceShooter gss, InetAddress ipAddress, int port) {
+	public Player(double x, double y, String username, ShootPlaneGame gss, InetAddress ipAddress, int port) {
 		super(x, y, StandardID.Player);
 
 		this.gss = gss;
@@ -47,7 +47,7 @@ public class Player extends StandardGameObject implements KeyListener {
 
 	}
 	
-	public Player(double x, double y, String username, GenericSpaceShooter gss) {
+	public Player(double x, double y, String username, ShootPlaneGame gss) {
 		super(x, y, StandardID.Player);
 
 		this.gss = gss;
@@ -76,7 +76,7 @@ public class Player extends StandardGameObject implements KeyListener {
 
 		if (velX != 0 || velY != 0) {
 			Packet02Move packet = new Packet02Move(this.getUsername(), this.x, this.y);
-			packet.writeData(GenericSpaceShooter.gss.socketClient);
+			packet.writeData(ShootPlaneGame.game.socketClient);
 		}
 		this.checkCoordinates();
 
@@ -98,8 +98,8 @@ public class Player extends StandardGameObject implements KeyListener {
 		
 		StandardDraw.text("Life: ", 20, 50, "", 40f, Color.BLACK);
 		StandardDraw.image(img, 100, 20);
-		StandardDraw.text("Score: " + GenericSpaceShooter.score, 20, 90, "", 40f, Color.BLACK);
-		StandardDraw.text("Level: " + (GenericSpaceShooter.score/1000 + 1), 20, 140, "", 40f, Color.BLACK);
+		StandardDraw.text("Score: " + ShootPlaneGame.score, 20, 90, "", 40f, Color.BLACK);
+		StandardDraw.text("Level: " + (ShootPlaneGame.score/1000 + 1), 20, 140, "", 40f, Color.BLACK);
 
 	}
 
@@ -163,10 +163,10 @@ public class Player extends StandardGameObject implements KeyListener {
 		} else {
 			this.interval = 0;
 			Bullet bullet = new Bullet((this.x + this.width / 2), this.y, -20, this.getId(), this.getUsername());
-			GenericSpaceShooter.gssh.addEntity(bullet);
+			ShootPlaneGame.gameHandler.addEntity(bullet);
 			bulletId++;
 			Packet03Fire packet = new Packet03Fire(this.username, bullet.getX(), bullet.getY());
-			packet.writeData(GenericSpaceShooter.gss.socketClient);
+			packet.writeData(ShootPlaneGame.game.socketClient);
 
 		}
 	}

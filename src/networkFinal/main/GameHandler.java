@@ -10,12 +10,12 @@ import com.joshuacrotts.standards.StandardGameObject;
 import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StandardID;
 
-public class GenericSpaceShooterHandler extends StandardHandler{
+public class GameHandler extends StandardHandler{
 	
-	public static GenericSpaceShooterHandler gssh;
+	public static GameHandler gameHandler;
 	
-	public GenericSpaceShooterHandler(){
-		gssh = this;
+	public GameHandler(){
+		gameHandler = this;
 		this.entities = new ArrayList<StandardGameObject>();
 	}
 	
@@ -72,9 +72,9 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 							this.entities.get(i).health -= 0;
 							this.entities.remove(j);
 							j--;
-							if (player.getUsername().equalsIgnoreCase(GenericSpaceShooter.player.getUsername())) {
-								JOptionPane.showMessageDialog(null, "You died, your score was: " + GenericSpaceShooter.score);
-								GenericSpaceShooter.gss.window.getFrame().dispatchEvent(new WindowEvent(GenericSpaceShooter.gss.window.getFrame(), WindowEvent.WINDOW_CLOSING));
+							if (player.getUsername().equalsIgnoreCase(ShootPlaneGame.player.getUsername())) {
+								JOptionPane.showMessageDialog(null, "You died, your score was: " + ShootPlaneGame.score);
+								ShootPlaneGame.game.window.getFrame().dispatchEvent(new WindowEvent(ShootPlaneGame.game.window.getFrame(), WindowEvent.WINDOW_CLOSING));
 								
 							}
 
@@ -98,17 +98,17 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 	
 	public void removePlayer(String username) {
 		int index = 0;
-		for (StandardGameObject e : gssh.entities) {
+		for (StandardGameObject e : gameHandler.entities) {
 			if (e instanceof Player && ((Player) e).getUsername().equals(username)) {
 				break;
 			}
 			index++;
 		}
-		gssh.entities.remove(index);
+		gameHandler.entities.remove(index);
 	}
 	
 	private Player getPlayer(String username) {
-		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
+		for (StandardGameObject e : ShootPlaneGame.gameHandler.entities) {
 			if (e instanceof Player && ((Player)e).getUsername().equals(username)) {
 				return (Player)e;
 			}
@@ -119,7 +119,7 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 	
 	private int getPlayerIndex (String username) {
 		int index = 0;
-		for (StandardGameObject e : GenericSpaceShooter.gssh.entities) {
+		for (StandardGameObject e : ShootPlaneGame.gameHandler.entities) {
 			if (e instanceof Player && ((Player)e).getUsername().equals(username)) {
 				break;
 			}
@@ -132,16 +132,16 @@ public class GenericSpaceShooterHandler extends StandardHandler{
 	
 	public void movePlayer(String username, double x, double y) {
 		int index = getPlayerIndex(username);
-		GenericSpaceShooterHandler.gssh.entities.get(index).x = x;
-		GenericSpaceShooterHandler.gssh.entities.get(index).y = y;
+		GameHandler.gameHandler.entities.get(index).x = x;
+		GameHandler.gameHandler.entities.get(index).y = y;
 	}
 	
 	public void fireBullet(String username) {
 		Player player = getPlayer(username);
 		int playerIndex = getPlayerIndex(username);
-		double playerPositionX = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).x;
-		double playerPositionY = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).y;
-		double playerWidth = GenericSpaceShooterHandler.gssh.entities.get(playerIndex).width;
-		GenericSpaceShooterHandler.gssh.entities.add(new Bullet((playerPositionX + playerWidth / 2), playerPositionY, -20, player.getId(), player.getUsername()));
+		double playerPositionX = GameHandler.gameHandler.entities.get(playerIndex).x;
+		double playerPositionY = GameHandler.gameHandler.entities.get(playerIndex).y;
+		double playerWidth = GameHandler.gameHandler.entities.get(playerIndex).width;
+		GameHandler.gameHandler.entities.add(new Bullet((playerPositionX + playerWidth / 2), playerPositionY, -20, player.getId(), player.getUsername()));
 	}
 }

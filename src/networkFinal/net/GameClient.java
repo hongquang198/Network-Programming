@@ -11,9 +11,9 @@ import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StandardID;
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.enemies.GreenBat;
-import networkFinal.main.GenericSpaceShooter;
-import networkFinal.main.GenericSpaceShooterHandler;
+import networkFinal.enemies.Hovercraft;
+import networkFinal.main.ShootPlaneGame;
+import networkFinal.main.GameHandler;
 import networkFinal.main.Player;
 import networkFinal.net.packets.Packet;
 import networkFinal.net.packets.Packet.PacketTypes;
@@ -26,10 +26,10 @@ import networkFinal.net.packets.Packet04EnemyMove;
 public class GameClient extends Thread {
 	private InetAddress ipAddress;
 	private DatagramSocket socket;
-	private GenericSpaceShooter gss;
+	private ShootPlaneGame game;
 
-	public GameClient(GenericSpaceShooter gss, String ipAddress) {
-		this.gss = gss;
+	public GameClient(ShootPlaneGame game, String ipAddress) {
+		this.game = game;
 		try {
 			this.socket = new DatagramSocket();
 			this.ipAddress = InetAddress.getByName(ipAddress);
@@ -68,12 +68,12 @@ public class GameClient extends Thread {
 			packet = new Packet00Login(data);
 			System.out.println("[" + address.getHostAddress() + ":" + port + "] "
 					+ ((Packet00Login) packet).getUsername() + " has joined the game ..");
-			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), gss, address, port);
-			GenericSpaceShooter.gssh.addEntity(player);
-			if (GenericSpaceShooter.gssh.entities.size() < 2) {
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgWait.png");
+			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
+			ShootPlaneGame.gameHandler.addEntity(player);
+			if (ShootPlaneGame.gameHandler.entities.size() < 2) {
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bgWait.png");
 			} else {
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgStart.png");
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bgStart.png");
 			}
 
 //			game.addListener(player);
@@ -82,7 +82,7 @@ public class GameClient extends Thread {
 			packet = new Packet01Disconnect(data);
 			System.out.println("[" + address.getHostAddress() + ":" + port + "] "
 					+ ((Packet01Disconnect) packet).getUsername() + " has left  the world ..");
-			GenericSpaceShooterHandler.gssh.removePlayer(((Packet01Disconnect) packet).getUsername());
+			GameHandler.gameHandler.removePlayer(((Packet01Disconnect) packet).getUsername());
 			break;
 		case MOVE:
 			packet = new Packet02Move(data);
@@ -92,16 +92,16 @@ public class GameClient extends Thread {
 			packet = new Packet03Fire(data);
 			handleFire(((Packet03Fire) packet));
 			int count = 0;
-			for (int i = 0; i < GenericSpaceShooter.gssh.entities.size(); i++)
+			for (int i = 0; i < ShootPlaneGame.gameHandler.entities.size(); i++)
 
-				if (GenericSpaceShooter.gssh.entities.get(i).getId() == StandardID.Player) {
+				if (ShootPlaneGame.gameHandler.entities.get(i).getId() == StandardID.Player) {
 					count++;
 				}
 			if (count >= 2) {
-				GenericSpaceShooter.isPlayer2Connected = true;
-				GenericSpaceShooter.isPlayer1Connected = true;
+				ShootPlaneGame.isPlayer2Connected = true;
+				ShootPlaneGame.isPlayer1Connected = true;
 
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bg.png");
 			}
 			break;
 		case ENEMYMOVE:
@@ -121,16 +121,16 @@ public class GameClient extends Thread {
 	}
 
 	private void handleMove(Packet02Move packet) {
-		GenericSpaceShooterHandler.gssh.movePlayer(packet.getUsername(), packet.getX(), packet.getY());
+		GameHandler.gameHandler.movePlayer(packet.getUsername(), packet.getX(), packet.getY());
 	}
 
 	private void handleFire(Packet03Fire packet) {
-		GenericSpaceShooterHandler.gssh.fireBullet(packet.getUsername());
+		GameHandler.gameHandler.fireBullet(packet.getUsername());
 	}
 
 	private void handleEnemyMove(Packet04EnemyMove packet) {
-		if (GenericSpaceShooter.gssh.size() < 20)
-			GenericSpaceShooter.gssh.addEntity(new GreenBat(packet.getX(), packet.getY()));
+		if (ShootPlaneGame.gameHandler.size() < 20)
+			ShootPlaneGame.gameHandler.addEntity(new Hovercraft(packet.getX(), packet.getY()));
 
 	}
 }

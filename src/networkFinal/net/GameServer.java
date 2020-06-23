@@ -11,9 +11,9 @@ import java.util.List;
 import com.joshuacrotts.standards.StandardHandler;
 import com.joshuacrotts.standards.StdOps;
 
-import networkFinal.enemies.GreenBat;
+import networkFinal.enemies.Hovercraft;
 import networkFinal.main.Bullet;
-import networkFinal.main.GenericSpaceShooter;
+import networkFinal.main.ShootPlaneGame;
 import networkFinal.main.Player;
 import networkFinal.net.packets.Packet;
 import networkFinal.net.packets.Packet.PacketTypes;
@@ -26,12 +26,12 @@ import networkFinal.net.packets.Packet04EnemyMove;
 public class GameServer extends Thread {
 
 	private DatagramSocket socket;
-	private GenericSpaceShooter game;
+	private ShootPlaneGame game;
 	private List<Player> connectedPlayers = new ArrayList<Player>();
-	private List<GreenBat> enemies = new ArrayList<GreenBat>();
+	private List<Hovercraft> enemies = new ArrayList<Hovercraft>();
 	boolean isAbleToFire = false;
 
-	public GameServer(GenericSpaceShooter game) {
+	public GameServer(ShootPlaneGame game) {
 		this.game = game;
 		try {
 			this.socket = new DatagramSocket(1331);
@@ -83,9 +83,9 @@ public class GameServer extends Thread {
 			Player player = new Player(300, 720, ((Packet00Login) packet).getUsername(), game, address, port);
 			this.addConnection(player, (Packet00Login) packet);
 			if (connectedPlayers.size() < 2) {
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgWait.png");
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bgWait.png");
 			} else {
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bgStart.png");
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bgStart.png");
 			}
 			break;
 		case DISCONNECT:
@@ -107,9 +107,9 @@ public class GameServer extends Thread {
 			System.out.println(((Packet03Fire) packet).getUsername() + "has fired.");
 			this.handleFire(((Packet03Fire) packet));
 			if (connectedPlayers.size() >= 2) {
-				GenericSpaceShooter.isPlayer2Connected = true;
-				GenericSpaceShooter.isPlayer1Connected = true;
-				GenericSpaceShooter.bg = StdOps.loadImage("Resources/bg.png");
+				ShootPlaneGame.isPlayer2Connected = true;
+				ShootPlaneGame.isPlayer1Connected = true;
+				ShootPlaneGame.bg = StdOps.loadImage("Resources/bg.png");
 				isAbleToFire = true;
 			}
 			break;
@@ -142,13 +142,13 @@ public class GameServer extends Thread {
 
 	public void generateEnemies() {
 		if (enemies.size() < 20) {
-			GreenBat greenBat = new GreenBat(StdOps.rand(0, 760), StdOps.rand(-200, -50));
+			Hovercraft greenBat = new Hovercraft(StdOps.rand(0, 760), StdOps.rand(-200, -50));
 			enemies.add(greenBat);
 		}
 	}
 
 	public void sendEnemies() {
-		for (GreenBat enemy : enemies) {
+		for (Hovercraft enemy : enemies) {
 			Packet04EnemyMove packet = new Packet04EnemyMove(enemy.getX(), enemy.getY());
 			sendDataToAllClients(packet.getData());
 		}
@@ -199,7 +199,7 @@ public class GameServer extends Thread {
 			int index = getPlayerIndex(packet.getUsername());
 			this.connectedPlayers.get(index).x = packet.getX();
 			this.connectedPlayers.get(index).y = packet.getY();
-			for (GreenBat enemy : enemies) {
+			for (Hovercraft enemy : enemies) {
 				if (enemy.getBounds().intersects(this.connectedPlayers.get(index).getBounds())) {
 					this.connectedPlayers.remove(index);
 				}
