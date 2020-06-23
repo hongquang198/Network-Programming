@@ -5,8 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import com.joshuacrotts.standards.StandardDraw;
@@ -84,9 +88,18 @@ public class Player extends StandardGameObject implements KeyListener {
 
 		g2.drawImage(this.currentSprite, (int) x, (int) y, null);
 		
-		StandardDraw.text("Life: ", 20, 50, "", 40f, Color.YELLOW);
-		StandardDraw.text("Score: " + GenericSpaceShooter.score, 20, 90, "", 40f, Color.YELLOW);
-		StandardDraw.text("Level: " + (GenericSpaceShooter.score/1000 + 1), 20, 140, "", 40f, Color.YELLOW);
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File("Resources/life.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		StandardDraw.text("Life: ", 20, 50, "", 40f, Color.BLACK);
+		StandardDraw.image(img, 100, 20);
+		StandardDraw.text("Score: " + GenericSpaceShooter.score, 20, 90, "", 40f, Color.BLACK);
+		StandardDraw.text("Level: " + (GenericSpaceShooter.score/1000 + 1), 20, 140, "", 40f, Color.BLACK);
 
 	}
 

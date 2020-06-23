@@ -37,7 +37,7 @@ public class GenericSpaceShooter extends StandardGame {
 	public static int score = 0;
 
 	public GenericSpaceShooter(int w, int h) {
-		super(w, h, "Generic Space Shooter!");
+		super(w, h, "KAMIKAZE");
 		isPlayer1Connected = false;
 		isPlayer2Connected = false;
 		this.consoleFPS = false;
